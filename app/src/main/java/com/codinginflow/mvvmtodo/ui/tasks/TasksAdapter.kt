@@ -12,7 +12,7 @@ import com.codinginflow.mvvmtodo.databinding.ItemTaskBinding
 class TasksAdapter : ListAdapter<Task, TasksAdapter.TasksViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TasksViewHolder {
-        val binding = ItemTaskBinding.inflate(LayoutInflater.from(parent.context),parent, false)
+        val binding = ItemTaskBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TasksViewHolder(binding)
     }
 
@@ -21,9 +21,9 @@ class TasksAdapter : ListAdapter<Task, TasksAdapter.TasksViewHolder>(DiffCallbac
         holder.bind(currentItem)
     }
 
-    class TasksViewHolder(private val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root){
+    class TasksViewHolder(private val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(task: Task){
+        fun bind(task: Task) {
             binding.apply {
                 checkBoxCompleted.isChecked = task.completed
                 textViewName.text = task.name
@@ -33,12 +33,11 @@ class TasksAdapter : ListAdapter<Task, TasksAdapter.TasksViewHolder>(DiffCallbac
         }
     }
 
-    class DiffCallback: DiffUtil.ItemCallback<Task>(){
+    class DiffCallback : DiffUtil.ItemCallback<Task>() {
+        override fun areItemsTheSame(oldItem: Task, newItem: Task) =
+            oldItem.id == newItem.id
 
-        override fun areItemsTheSame(oldItem: Task, newItem: Task) = oldItem.id == newItem.id
-
-        override fun areContentsTheSame(oldItem: Task, newItem: Task) = oldItem == newItem
-
+        override fun areContentsTheSame(oldItem: Task, newItem: Task) =
+            oldItem == newItem
     }
-
 }

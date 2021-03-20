@@ -10,31 +10,24 @@ import kotlinx.coroutines.flow.flatMapLatest
 
 class TasksViewModel @ViewModelInject constructor(
     private val taskDao: TaskDao
-    ): ViewModel() {
+) : ViewModel() {
 
-        val searchQuery = MutableStateFlow("")
+    val searchQuery = MutableStateFlow("")
 
-        val sortOrder = MutableStateFlow(SortOrder.BY_DATE)
+    val sortOrder = MutableStateFlow(SortOrder.BY_DATE)
+    val hideCompleted = MutableStateFlow(false)
 
-        val hideCompleted = MutableStateFlow(false)
+    private val tasksFlow = combine(
+        searchQuery,
+        sortOrder,
+        hideCompleted
+    ) { query, sortOrder, hideCompleted ->
+        Triple(query, sortOrder, hideCompleted)
+    }.flatMapLatest { (query, sortOrder, hideCompleted) ->
+        taskDao.getTasks(query, sortOrder, hideCompleted)
+    }
 
-        private val taskFlow = combine(
-            searchQuery,
-            sortOrder,
-            hideCompleted
-        ) { query, sortOrder, hideCompleted ->
-            Triple(query,sortOrder,hideCompleted)
-        }.flatMapLatest {(query, sortOrder, hideCompleted) ->
-            taskDao.getTasks(query,sortOrder,hideCompleted)
-        }
-
-
-
-        val tasks =  taskFlow.asLiveData()
-
+    val tasks = tasksFlow.asLiveData()
 }
 
-enum class SortOrder {
-    BY_NAME,
-    BY_DATE
-}
+enum class SortOrder { BY_NAME, BY_DATE }
