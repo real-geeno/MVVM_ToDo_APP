@@ -18,6 +18,6 @@ data class Task(
     val createdDateFormatted: String
         get() = DateFormat.getDateTimeInstance().format(created)
 
-    lateinit var val procodio?
+
 
 }
